@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="es" translate="no" class="notranslate">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google" content="notranslate">
+  <title>Lexical Skills</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8C96E;
+      --bg: #0D1117;
+      --surf: #151C2A;
+      --surf2: #1C253A;
+      --bdr: #26304A;
+      --text: #E8E4D9;
+      --muted: #7A8595;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Crimson Pro', serif;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .inp {
+      background: var(--surf2);
+      border: 1.5px solid var(--bdr);
+      border-radius: 10px;
+      padding: 11px 16px;
+      color: var(--text);
+      font-size: 15px;
+      width: 100%;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .inp:focus {
+      border-color: var(--gold);
+    }
+
+    .card {
+      background: var(--surf);
+      border: 1px solid var(--bdr);
+      border-radius: 16px;
+      padding: 28px;
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #0D1117;
+      font-weight: 700;
+      padding: 13px 28px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all .2s;
+    }
+
+    .btn-gold:hover {
+      opacity: .9;
+      transform: translateY(-1px);
+    }
+
+    .btn-gold:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--gold);
+      font-weight: 600;
+      padding: 11px 24px;
+      border-radius: 10px;
+      border: 2px solid var(--gold);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all .2s;
+    }
+
+    .btn-outline:hover {
+      background: rgba(201, 168, 76, .12);
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: #fff;
+      font-weight: 700;
+      padding: 13px 28px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all .2s;
+    }
+
+    .btn-danger:hover {
+      opacity: .9;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--bdr);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      border-radius: 3px;
+      transition: width .4s ease;
+    }
+
+    .cat-card {
+      background: var(--surf2);
+      border: 1.5px solid var(--bdr);
+      border-radius: 14px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all .2s;
+      user-select: none;
+    }
+
+    .cat-card:hover {
+      border-color: rgba(201, 168, 76, .5);
+    }
+
+    .cat-card.on {
+      border-color: var(--gold);
+      background: rgba(201, 168, 76, .08);
+    }
+
+    .cat-radio {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--bdr);
+      display: inline-block;
+      flex-shrink: 0;
+      transition: all .2s;
+      position: relative;
+    }
+
+    .cat-card.on .cat-radio {
+      border-color: var(--gold);
+    }
+
+    .cat-card.on .cat-radio::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    .choice-btn {
+      background: var(--surf2);
+      border: 1.5px solid var(--bdr);
+      border-radius: 12px;
+      padding: 14px 18px;
+      text-align: left;
+      cursor: pointer;
+      transition: all .2s;
+      width: 100%;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .choice-btn:hover:not(:disabled) {
+      border-color: var(--gold);
+      background: rgba(201, 168, 76, .08);
+    }
+
+    .choice-btn.correct {
+      border-color: #10b981 !important;
+      background: rgba(16, 185, 129, .15) !important;
+      color: #10b981 !important;
+    }
+
+    .choice-btn.wrong {
+      border-color: #ef4444 !important;
+      background: rgba(239, 68, 68, .12) !important;
+      color: #ef4444 !important;
+    }
+
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+
+    .dir-btn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 1.5px solid var(--bdr);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      background: transparent;
+      transition: all .2s;
+    }
+
+    .dir-btn.on {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(201, 168, 76, .1);
+    }
+
+    .review-row {
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .review-row.ok {
+      background: rgba(16, 185, 129, .08);
+      border: 1px solid rgba(16, 185, 129, .25);
+    }
+
+    .review-row.err {
+      background: rgba(239, 68, 68, .08);
+      border: 1px solid rgba(239, 68, 68, .25);
+    }
+
+    .skiptranslate,
+    #goog-gt-tt,
+    .goog-te-banner-frame,
+    .goog-te-menu-value,
+    #google_translate_element,
+    .VIpgJd-ZVi9od-ORHb-OEVmcd,
+    .VIpgJd-ZVi9od-aZ2wEe-wOHMyf {
+      display: none !important;
+    }
+
+    body {
+      top: 0 !important;
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--bdr);
+      border-radius: 2px;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-up {
+      animation: fadeUp .3s ease forwards;
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      z-index: 999;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: all .25s;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.ok {
+      background: rgba(16, 185, 129, .15);
+      border: 1.5px solid #10b981;
+      color: #10b981;
+    }
+
+    .toast.bad {
+      background: rgba(239, 68, 68, .12);
+      border: 1.5px solid #ef4444;
+      color: #ef4444;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .7);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-box {
+      background: var(--surf);
+      border: 1px solid var(--bdr);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══ REGISTER ═══ -->
+  <div id="screen-register" class="screen active">
+    <div class="min-h-screen flex flex-col">
+      <div
+        style="background:linear-gradient(135deg,#151C2A 0%,#0D1117 100%);border-bottom:1px solid var(--bdr);padding:40px 24px 32px;">
+        <div class="max-w-xl mx-auto text-center">
+          <div style="font-size:40px;margin-bottom:12px;">📝</div>
+          <h1 style="font-size:clamp(30px,5vw,46px);color:var(--text);line-height:1.1;margin-bottom:8px;">Lexical Skills
+          </h1>
+          <p style="color:var(--gold);font-size:17px;font-family:'Crimson Pro',serif;font-style:italic;">Evaluación de
+            Lexical Skills en Inglés</p>
+          <p style="color:var(--muted);font-size:13px;margin-top:6px;">639 palabras · Opción múltiple · Calificación
+            automática</p>
+        </div>
+      </div>
+
+      <div class="flex-1 overflow-y-auto" style="padding:28px 16px 48px;">
+        <div class="max-w-xl mx-auto" style="display:flex;flex-direction:column;gap:20px;">
+
+          <!-- Student data -->
+          <div class="card fade-up">
+            <h2 style="color:var(--gold);font-size:21px;margin-bottom:18px;">👤 Datos del Estudiante</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div>
+                <label
+                  style="font-size:11px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Nombres</label>
+                <input id="reg-nombres" class="inp" placeholder="Nombres..." autocomplete="off">
+              </div>
+              <div>
+                <label
+                  style="font-size:11px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Apellidos</label>
+                <input id="reg-apellidos" class="inp" placeholder="Apellidos..." autocomplete="off">
+              </div>
+              <div style="grid-column:1/-1;">
+                <label
+                  style="font-size:11px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;">Curso
+                  / Grupo</label>
+                <input id="reg-curso" class="inp" placeholder="Ej. 1101 o 1102" autocomplete="off">
+              </div>
+            </div>
+          </div>
+
+          <!-- Category -->
+          <div class="card fade-up" style="animation-delay:.05s;">
+            <h2 style="color:var(--gold);font-size:21px;margin-bottom:6px;">📚 Categoría de Vocabulario</h2>
+            <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Selecciona el nivel a evaluar. Se usarán
+              <strong style="color:var(--text);">todas las palabras</strong> de la categoría elegida.
+            </p>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="cat-card" data-cat="basic" onclick="selectCat('basic')">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div class="cat-radio"></div>
+                  <div>
+                    <div style="font-weight:700;font-size:15px;margin-bottom:2px;">1 · Intermediate Vocabulary</div>
+                    <div style="font-size:13px;color:var(--muted);">474 palabras · Phrasal verbs, alimentos,
+                      profesiones, tecnología y más</div>
+                  </div>
+                </div>
+              </div>
+              <div class="cat-card" data-cat="inter" onclick="selectCat('inter')">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div class="cat-radio"></div>
+                  <div>
+                    <div style="font-weight:700;font-size:15px;margin-bottom:2px;">2 · Basic Vocabulary</div>
+                    <div style="font-size:13px;color:var(--muted);">165 palabras · Adjetivos, verbos, días, meses,
+                      cuerpo humano y más</div>
+                  </div>
+                </div>
+              </div>
+              <div class="cat-card" data-cat="all" onclick="selectCat('all')">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div class="cat-radio"></div>
+                  <div>
+                    <div style="font-weight:700;font-size:15px;margin-bottom:2px;">3 · Todos los Niveles</div>
+                    <div style="font-size:13px;color:var(--muted);">639 palabras · Basic + Intermediate combinados</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Direction -->
+          <div class="card fade-up" style="animation-delay:.1s;">
+            <h2 style="color:var(--gold);font-size:21px;margin-bottom:12px;">🔄 Dirección de Traducción</h2>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="dir-btn on" data-dir="en-es" onclick="selectDir('en-es')">🇬🇧 Inglés → Español</button>
+              <button class="dir-btn" data-dir="es-en" onclick="selectDir('es-en')">🇪🇸 Español → Inglés</button>
+            </div>
+          </div>
+
+          <!-- Start -->
+          <div style="text-align:center;" class="fade-up">
+            <button class="btn-gold" style="font-size:16px;padding:15px 48px;" onclick="startExam()">Comenzar Evaluación
+              →</button>
+            <div id="reg-error" style="color:#ef4444;font-size:13px;margin-top:10px;display:none;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ EXAM ═══ -->
+  <div id="screen-exam" class="screen">
+    <div class="min-h-screen flex flex-col">
+      <!-- Header -->
+      <div
+        style="background:var(--surf);border-bottom:1px solid var(--bdr);padding:12px 20px;position:sticky;top:0;z-index:10;">
+        <div class="max-w-xl mx-auto">
+          <div
+            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
+            <div>
+              <span style="font-size:13px;font-weight:700;color:var(--gold);" id="hdr-name"></span>
+              <span style="font-size:12px;color:var(--muted);margin-left:6px;" id="hdr-cat"></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:12px;"><span style="color:#10b981;font-weight:700;" id="live-ok">0</span> <span
+                  style="color:var(--muted);">✓</span> <span style="color:#ef4444;font-weight:700;margin-left:6px;"
+                  id="live-err">0</span> <span style="color:var(--muted);">✗</span></span>
+              <button class="btn-danger" style="padding:7px 14px;font-size:12px;" onclick="showFinishModal()">⏹ Terminar
+                y Enviar</button>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="exam-progress-fill" style="width:0%;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:5px;">
+            <span style="font-size:11px;color:var(--muted);" id="exam-counter">Pregunta 1 de N</span>
+            <span style="font-size:11px;color:var(--muted);" id="exam-dir"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question -->
+      <div class="flex-1 overflow-y-auto" style="padding:24px 16px 60px;">
+        <div class="max-w-xl mx-auto" id="question-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ RESULTS ═══ -->
+  <div id="screen-results" class="screen">
+    <div class="min-h-screen" style="padding:28px 16px 60px;">
+      <div class="max-w-xl mx-auto">
+        <div class="card fade-up" style="text-align:center;margin-bottom:20px;">
+          <h2 style="font-size:28px;margin-bottom:18px;color:var(--text);">Resultados Finales</h2>
+          <div id="grade-display" style="margin-bottom:18px;"></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:380px;margin:0 auto 18px;">
+            <div style="padding:12px;background:var(--surf2);border-radius:10px;border:1px solid var(--bdr);">
+              <div style="font-size:24px;font-weight:700;color:#10b981;" id="res-ok">0</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px;">Correctas</div>
+            </div>
+            <div style="padding:12px;background:var(--surf2);border-radius:10px;border:1px solid var(--bdr);">
+              <div style="font-size:24px;font-weight:700;color:#ef4444;" id="res-err">0</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px;">Errores</div>
+            </div>
+            <div style="padding:12px;background:var(--surf2);border-radius:10px;border:1px solid var(--bdr);">
+              <div style="font-size:24px;font-weight:700;color:var(--gold);" id="res-pct">0%</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px;">Precisión</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:18px;" id="res-meta"></div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+            <button class="btn-gold" onclick="retryErrors()" id="retry-btn">🔁 Repasar Errores</button>
+            <button class="btn-outline" onclick="goHome()">🏠 Nueva Evaluación</button>
+          </div>
+          <div id="sheets-status" style="margin-top:14px;font-size:13px;color:var(--muted);"></div>
+        </div>
+
+        <div class="card fade-up" style="animation-delay:.1s;">
+          <h3 style="font-size:19px;color:var(--gold);margin-bottom:14px;">📋 Revisión Detallada</h3>
+          <div id="review-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FINISH MODAL ═══ -->
+  <div class="modal-overlay" id="finish-modal" style="display:none;">
+    <div class="modal-box fade-up">
+      <div style="font-size:44px;margin-bottom:14px;">⏹</div>
+      <h2 style="font-size:22px;margin-bottom:10px;color:var(--text);">¿Terminar y Enviar?</h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:6px;" id="modal-progress-text"></p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">Se calificará con base en las preguntas
+        respondidas hasta el momento. Los resultados se enviarán a Google Sheets.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-danger" onclick="finishNow()">⏹ Sí, Terminar y Enviar</button>
+        <button class="btn-outline" onclick="hideFinishModal()">Continuar respondiendo</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════════
+    //  VOCABULARY DATA
+    // ═══════════════════════════════════════════════════════════════
+    const BASIC = [{"en": "Hand in", "es": "Entregar"}, {"en": "Break up", "es": "Separarse/Terminar una relación de pareja"}, {"en": "Add up", "es": "Sumar"}, {"en": "Call off", "es": "Cancelar"}, {"en": "Look after", "es": "Cuidar"}, {"en": "Bring about", "es": "Ocasionar"}, {"en": "Call back", "es": "Llamar más tarde"}, {"en": "Carry out", "es": "Llevar a cabo"}, {"en": "Fall apart", "es": "Deshacerse"}, {"en": "Show up", "es": "Aparecer"}, {"en": "Blow up", "es": "Estallar"}, {"en": "Bring up", "es": "Criar"}, {"en": "Carry on", "es": "Seguir"}, {"en": "Get up", "es": "Levantarse"}, {"en": "Take off", "es": "Despegar"}, {"en": "Instead", "es": "En cambio"}, {"en": "Since", "es": "Desde que"}, {"en": "Then", "es": "Entonces"}, {"en": "While", "es": "Mientras"}, {"en": "Beyond", "es": "Más allá"}, {"en": "Although", "es": "Aunque"}, {"en": "Despite", "es": "A pesar de"}, {"en": "Unless", "es": "A menos que"}, {"en": "Moreover", "es": "Además"}, {"en": "Nevertheless-However", "es": "Sin embargo"}, {"en": "Therefore", "es": "Por lo tanto"}, {"en": "Seafood", "es": "Mariscos"}, {"en": "Chicken", "es": "Pollo"}, {"en": "Beef", "es": "Carne de vaca"}, {"en": "Lamb", "es": "Cordero"}, {"en": "Poultry", "es": "Aves de corral"}, {"en": "Veal", "es": "Ternera"}, {"en": "Pork", "es": "Carne de cerdo"}, {"en": "Sausage", "es": "Salchicha"}, {"en": "Ham", "es": "Jamón"}, {"en": "Bacon", "es": "Tocino"}, {"en": "Gravy", "es": "Salsa"}, {"en": "Mustard", "es": "Mostaza"}, {"en": "Bean", "es": "Habichuela"}, {"en": "Pea", "es": "Guisante"}, {"en": "Zucchini", "es": "Calabacín"}, {"en": "Spinach", "es": "Espinaca"}, {"en": "Pumpkin", "es": "Calabaza"}, {"en": "Cobbage", "es": "Col"}, {"en": "Watermelon", "es": "Sandía"}, {"en": "Pineapple", "es": "Piña"}, {"en": "Grapefruit", "es": "Pomelo"}, {"en": "Apricot", "es": "Albaricoque"}, {"en": "Fig", "es": "Higo"}, {"en": "Peach", "es": "Melocotón"}, {"en": "Plum", "es": "Ciruela"}, {"en": "Pear", "es": "Pera"}, {"en": "Strawberry", "es": "Fresa"}, {"en": "Cherry", "es": "Cereza"}, {"en": "South", "es": "Sur"}, {"en": "East", "es": "Este"}, {"en": "West", "es": "Oeste"}, {"en": "North", "es": "Norte"}, {"en": "Freezer", "es": "Congelador"}, {"en": "Stove", "es": "Cocina"}, {"en": "Oven", "es": "Horno"}, {"en": "Dishwasher", "es": "Lavaplatos"}, {"en": "Blender", "es": "Licuadora"}, {"en": "Mixer", "es": "Batidora"}, {"en": "Fridge", "es": "Nevera"}, {"en": "Researcher", "es": "Investigador"}, {"en": "Businessman", "es": "Empresario"}, {"en": "Salesman", "es": "Vendedor"}, {"en": "Engineer", "es": "Ingeniero"}, {"en": "Pilot", "es": "Piloto"}, {"en": "Builder", "es": "Constructor"}, {"en": "Lifeguard", "es": "Socorrista"}, {"en": "Firefighter", "es": "Bombero"}, {"en": "Clerk", "es": "Funcionario"}, {"en": "Guide", "es": "Guía"}, {"en": "Translator", "es": "Traductor"}, {"en": "Journalist", "es": "Periodista"}, {"en": "Lawyer", "es": "Abogado"}, {"en": "Judge", "es": "Juez"}, {"en": "Nurse", "es": "Enfermera"}, {"en": "Physician", "es": "Médico"}, {"en": "Surgeon", "es": "Cirujano"}, {"en": "Chemist", "es": "Químico"}, {"en": "Cook", "es": "Cocinero"}, {"en": "Waiter", "es": "Camarero"}, {"en": "Baker", "es": "Panadero"}, {"en": "Carpenter", "es": "Carpintero"}, {"en": "Plumber", "es": "Fontanero"}, {"en": "Programmer", "es": "Programador"}, {"en": "Entertainer", "es": "Artista"}, {"en": "Jeweler", "es": "Joyero"}, {"en": "Tailor", "es": "Sastre"}, {"en": "Octopus", "es": "Pulpo"}, {"en": "Jellyfish", "es": "Medusa"}, {"en": "Whale", "es": "Ballena"}, {"en": "Walrus", "es": "Morsa"}, {"en": "Shark", "es": "Tiburón"}, {"en": "Seal", "es": "Foca"}, {"en": "Dolphin", "es": "Delfín"}, {"en": "Author", "es": "Escritor"}, {"en": "Poet", "es": "Poeta"}, {"en": "Screenwrite", "es": "Guionista"}, {"en": "Playwright", "es": "Dramaturgo"}, {"en": "Painter", "es": "Pintor"}, {"en": "Sculptor", "es": "Escultor"}, {"en": "Desinger", "es": "Diseñador"}, {"en": "Singer", "es": "Cantante"}, {"en": "Musician", "es": "Músico"}, {"en": "Composer", "es": "Compositor"}, {"en": "Worm", "es": "Gusano"}, {"en": "Butterfly", "es": "Mariposa"}, {"en": "Bee", "es": "Abeja"}, {"en": "Fly", "es": "Mosca"}, {"en": "Beetle", "es": "Escarabajo"}, {"en": "Ant", "es": "Hormiga"}, {"en": "Spider", "es": "Araña"}, {"en": "Cockroach", "es": "Cucaracha"}, {"en": "Grasshopper", "es": "Saltamontes"}, {"en": "Accident", "es": "Accidente"}, {"en": "Flea", "es": "Pulga"}, {"en": "Gear", "es": "Marcha"}, {"en": "Windshield", "es": "Parabrisas"}, {"en": "Brake", "es": "Freno"}, {"en": "Accelerator", "es": "Acelerador"}, {"en": "Rearview mirror", "es": "Espejo retrovisor"}, {"en": "Tire", "es": "Llanta"}, {"en": "License plate", "es": "Matricula"}, {"en": "Ignition", "es": "Ignición"}, {"en": "Trunk", "es": "Baúl"}, {"en": "Streering wheel", "es": "Volante"}, {"en": "Hood", "es": "Capucha"}, {"en": "Dashboard", "es": "T. de Herramientas"}, {"en": "Curve", "es": "Curva"}, {"en": "Tunnel", "es": "Tunel"}, {"en": "Seat belt", "es": "Cinturon de Seguridad"}, {"en": "Highway", "es": "Avenida"}, {"en": "Traffic cicle", "es": "Rotonda"}, {"en": "Sidewalk", "es": "Acera"}, {"en": "Crossroads", "es": "Cruce"}, {"en": "Margin", "es": "Borde"}, {"en": "Traffic light", "es": "Semáforo"}, {"en": "Gas station", "es": "Estación de Gasolina"}, {"en": "Crosswalk", "es": "Cruce peatonal"}, {"en": "Earn", "es": "Ganar dinero"}, {"en": "Own", "es": "Poseer"}, {"en": "Purchace", "es": "Comprar"}, {"en": "Rise", "es": "Aumentar"}, {"en": "Supply", "es": "Suministar"}, {"en": "Bargain", "es": "Regatear"}, {"en": "Account", "es": "Cuenta"}, {"en": "Advertisement", "es": "Anuncio"}, {"en": "Branch", "es": "Sucursal"}, {"en": "Brand", "es": "Marca"}, {"en": "Stock", "es": "Reserva"}, {"en": "Supply", "es": "Suministro"}, {"en": "Budget", "es": "Presupuesto"}, {"en": "Debt", "es": "Deuda"}, {"en": "Fee", "es": "Honorarios"}, {"en": "Income", "es": "Ingresos"}, {"en": "Insurance", "es": "Seguro"}, {"en": "Investment", "es": "Inversión"}, {"en": "Receipt", "es": "Recibo"}, {"en": "Revenue", "es": "Ingresos"}, {"en": "Profit", "es": "Beneficio"}, {"en": "Rate", "es": "Ritmo"}, {"en": "Refund", "es": "Reembolso"}, {"en": "Survey", "es": "Encuesta"}, {"en": "Tax", "es": "Impuesto"}, {"en": "Trade", "es": "Comercio"}, {"en": "Trademark", "es": "Marca Registrada"}, {"en": "Wealth", "es": "Riqueza"}, {"en": "Wage", "es": "Sueldo"}, {"en": "Loan", "es": "Préstamo"}, {"en": "Regret", "es": "Arrepentimiento"}, {"en": "Betrayal", "es": "Traición"}, {"en": "Happiness", "es": "Felicidad"}, {"en": "Sadness", "es": "Tristeza"}, {"en": "Anxiety", "es": "Ansiedad"}, {"en": "Confidence", "es": "Confianza"}, {"en": "Envy", "es": "Envidia"}, {"en": "Pleasure", "es": "Placer"}, {"en": "Rage", "es": "Ira"}, {"en": "Shame", "es": "VergÜenza"}, {"en": "Cheerful", "es": "Alegre"}, {"en": "Aware", "es": "Consciente"}, {"en": "Depressed", "es": "Deprimido"}, {"en": "Content", "es": "Conforme"}, {"en": "Guilty", "es": "Culpable"}, {"en": "Brave", "es": "Valiente"}, {"en": "Embarrassed", "es": "Avergonzado"}, {"en": "Glove", "es": "Guante"}, {"en": "Sleeve", "es": "Manga"}, {"en": "Tights", "es": "Mallas"}, {"en": "Necklace", "es": "Collar"}, {"en": "Shirt", "es": "Camisa"}, {"en": "Blouse", "es": "Blusa"}, {"en": "Cotton", "es": "Algodón"}, {"en": "Wool", "es": "Lana"}, {"en": "Wrist", "es": "Muñeca"}, {"en": "Waist", "es": "Cintura"}, {"en": "Jaw", "es": "Mandíbula"}, {"en": "Heel", "es": "Talón"}, {"en": "Knee", "es": "Rodilla"}, {"en": "Palm", "es": "Palma"}, {"en": "Forehead", "es": "Frente"}, {"en": "Thigh", "es": "Muslo"}, {"en": "Shin", "es": "Espinilla"}, {"en": "Forward", "es": "Reenviar"}, {"en": "Reply", "es": "Responder"}, {"en": "Print", "es": "Imprimir"}, {"en": "shut down", "es": "Apagar"}, {"en": "Log on", "es": "Iniciar sesión"}, {"en": "Upload", "es": "Cargar"}, {"en": "Download", "es": "Descargar"}, {"en": "Save", "es": "Guardar"}, {"en": "Wireless", "es": "Inalámbrico"}, {"en": "Link", "es": "Enlace"}, {"en": "Browser", "es": "Navegador"}, {"en": "Keyboard", "es": "Teclado"}, {"en": "Screen", "es": "Pantalla"}, {"en": "Device", "es": "Dispositivo"}, {"en": "Desktgop", "es": "Escritorio"}, {"en": "Drive", "es": "Unidad de disco"}, {"en": "File", "es": "Archivo"}, {"en": "Attachment", "es": "Adjunto"}, {"en": "Speaker", "es": "Altavoz"}, {"en": "Spreadsheet", "es": "Hoja de cálculo"}, {"en": "Inbox", "es": "B. de Entrada"}, {"en": "Provider", "es": "Proveedor"}, {"en": "Network", "es": "Red"}, {"en": "Draft", "es": "Borrador"}, {"en": "Bookmark", "es": "Marcador"}, {"en": "Button", "es": "Botón"}, {"en": "Folder", "es": "Carpeta"}, {"en": "Form", "es": "Formulario"}, {"en": "Password", "es": "Contraseña"}, {"en": "Template", "es": "Plantilla"}, {"en": "Tag", "es": "Etiqueta"}, {"en": "Heal", "es": "Curar"}, {"en": "Hurt", "es": "Doler"}, {"en": "Cough", "es": "Toser"}, {"en": "Rest", "es": "Descansar"}, {"en": "Sick", "es": "Enfermo"}, {"en": "Treatment", "es": "Tratamiento"}, {"en": "Appointment", "es": "Cita"}, {"en": "Appointment", "es": "Cita medica"}, {"en": "Surgery", "es": "Cirugía"}, {"en": "Disease", "es": "Enfermedad"}, {"en": "Pain", "es": "Dolor"}, {"en": "Headache", "es": "D de Cabeza"}, {"en": "Fever", "es": "Fiebre"}, {"en": "Flu", "es": "Gripe"}, {"en": "Hiccup", "es": "Hipo"}, {"en": "Pill", "es": "PÍldora"}, {"en": "Blister", "es": "Ampolla"}, {"en": "Bruise", "es": "Moretón"}, {"en": "Wound", "es": "Herida"}, {"en": "Rid", "es": "Costilla"}, {"en": "Bone", "es": "Hueso"}, {"en": "Muscle", "es": "Músculo"}, {"en": "Liver", "es": "Hígado"}, {"en": "Kidney", "es": "Riñón"}, {"en": "Heart", "es": "Corazón"}, {"en": "Lung", "es": "Pulmón"}, {"en": "Moody", "es": "Temperamental"}, {"en": "Bitter", "es": "Amargo"}, {"en": "Hopeless", "es": "Desesperado"}, {"en": "Anxious", "es": "Inquieto"}, {"en": "Awkward", "es": "Torpe"}, {"en": "Hesitate", "es": "Dudar"}, {"en": "Bold", "es": "Atrevido"}, {"en": "Courageous", "es": "Valiente"}, {"en": "Awesome", "es": "Asombroso"}, {"en": "Wealthy", "es": "Adinerado"}, {"en": "Raw", "es": "Crudo"}, {"en": "Neat", "es": "Ordenado"}, {"en": "Skinny", "es": "Flaco"}, {"en": "Bearable", "es": "Soportable"}, {"en": "Brief", "es": "Breve"}, {"en": "Undeniable", "es": "Inneglable"}, {"en": "Smooth", "es": "Liso"}, {"en": "Rough", "es": "Áspero"}, {"en": "Sharp", "es": "Afilado"}, {"en": "Suburb", "es": "Suburbio"}, {"en": "Railroad", "es": "Ferrocaril"}, {"en": "Harbor", "es": "Puerto"}, {"en": "Resort", "es": "L de vacaciones"}, {"en": "Mall", "es": "Centro Comercial"}, {"en": "City hall", "es": "Ayuntamiento"}, {"en": "Forest", "es": "Bosque"}, {"en": "Jail", "es": "Cárcel"}, {"en": "Office", "es": "Oficina"}, {"en": "Countryside", "es": "Campo"}, {"en": "Coast", "es": "Costa"}, {"en": "Bay", "es": "Bahía"}, {"en": "Valley", "es": "Valle"}, {"en": "Castle", "es": "Castillo"}, {"en": "Silk", "es": "Seda"}, {"en": "Leather", "es": "Cuero"}, {"en": "Skin", "es": "Piel"}, {"en": "Rubber", "es": "Goma"}, {"en": "Nylon", "es": "Nilón"}, {"en": "Glue", "es": "Pegamento"}, {"en": "Straw", "es": "Paja"}, {"en": "Iron", "es": "Hierro"}, {"en": "Copper", "es": "Cobre"}, {"en": "Steel", "es": "Acero"}, {"en": "Pollution", "es": "Contaminación"}, {"en": "Waste", "es": "Basura"}, {"en": "Sea lever", "es": "Nivel del mar"}, {"en": "Flood", "es": "Inundación"}, {"en": "Global Warming", "es": "Calentamiento global"}, {"en": "Recycling", "es": "Reciclaje"}, {"en": "Earthquake", "es": "Terremoto"}, {"en": "Climate", "es": "Clima"}, {"en": "Rainforest", "es": "Bosque Tropical"}, {"en": "Environment", "es": "Medio ambiente"}, {"en": "Mire", "es": "Ciénega"}, {"en": "Fertile", "es": "Fecundo"}, {"en": "Reusable", "es": "Reutilizable"}, {"en": "Foggy", "es": "Brumoso"}, {"en": "Poisonous", "es": "Venenoso"}, {"en": "Hesitate", "es": "Vacilar"}, {"en": "Decide", "es": "Decidir"}, {"en": "Realice", "es": "Darse cuenta"}, {"en": "Recognize", "es": "Reconocer"}, {"en": "Remove", "es": "Quitar"}, {"en": "Overcome", "es": "Vencer"}, {"en": "Bribe", "es": "Sobornar"}, {"en": "Spit", "es": "Escupir"}, {"en": "Respond", "es": "Contestar"}, {"en": "Snore", "es": "Roncar"}, {"en": "Sneeze", "es": "Estornudar"}, {"en": "Promise", "es": "Prometer"}, {"en": "Imagine", "es": "Imaginar"}, {"en": "Improve", "es": "Mejorar"}, {"en": "Survive", "es": "Sobrevivir"}, {"en": "Prevent", "es": "Prevenir"}, {"en": "Require", "es": "Requerir"}, {"en": "Reveal", "es": "Revelar"}, {"en": "Complain", "es": "Quejarse"}, {"en": "Involve", "es": "Implicar"}, {"en": "Believe", "es": "Creer"}, {"en": "Lend", "es": "Prestar"}, {"en": "Borrow", "es": "Pedir prestado"}, {"en": "Follow", "es": "Seguir"}, {"en": "Encourage", "es": "Animar"}, {"en": "Eggplant", "es": "Berenjena"}, {"en": "Couliflower", "es": "Coliflor"}, {"en": "Carrot", "es": "Zanahoria"}, {"en": "Mushroom", "es": "Hongo"}, {"en": "Ginger", "es": "Jengibre"}, {"en": "Garlic", "es": "Ajo"}, {"en": "Quality", "es": "Calidad"}, {"en": "Quantity", "es": "Cantidad"}, {"en": "Majority", "es": "Mayoría"}, {"en": "Behavior", "es": "Comportamiento"}, {"en": "Risk", "es": "Riesgo"}, {"en": "Advance", "es": "Ventaja"}, {"en": "Ability", "es": "Aptitud"}, {"en": "Absence", "es": "Ausencia"}, {"en": "Harmony", "es": "Armonía"}, {"en": "Mercy", "es": "Misericordia"}, {"en": "Hilarious", "es": "Muy divertido"}, {"en": "Gorgeous", "es": "Hermoso"}, {"en": "Outstanding", "es": "Destacado"}, {"en": "Glossy", "es": "Brillante"}, {"en": "Accurate", "es": "Exacto"}, {"en": "Clumsy", "es": "Torpe"}, {"en": "Graceful", "es": "Gráciles"}, {"en": "Daring", "es": "Osado"}, {"en": "Sacred", "es": "Sagrado"}, {"en": "Tender", "es": "Tierno"}, {"en": "Illiterate", "es": "Analfabeto"}, {"en": "Cartoon", "es": "Tira cómica"}, {"en": "Zoom", "es": "Acercamiento"}, {"en": "Scene", "es": "Escena"}, {"en": "Thriller", "es": "Obra de suspenso"}, {"en": "Sciense Fiction", "es": "Ciencia ficción"}, {"en": "Box office", "es": "Taquilla"}, {"en": "Premiere", "es": "Estreno"}, {"en": "Audience", "es": "Público"}, {"en": "Watch", "es": "Reloj"}, {"en": "Earring", "es": "Pendiente"}, {"en": "Bracelet", "es": "Pulsera"}, {"en": "Purse", "es": "Cartera"}, {"en": "Wallet", "es": "Billetera"}, {"en": "Scarf", "es": "Bufanda"}, {"en": "Handkerchief", "es": "Pañuelo"}, {"en": "Headband", "es": "Cinta de pelo"}, {"en": "Tie", "es": "Corbata"}, {"en": "Sunglasses", "es": "Gafas de sol"}, {"en": "Umbrella", "es": "Paraguas"}, {"en": "Belt", "es": "Cinturón"}, {"en": "Sock", "es": "Calcetín"}, {"en": "Shoelace", "es": "Cordón"}, {"en": "Sneakers", "es": "Tenis"}, {"en": "Helmet", "es": "Cascol"}, {"en": "Elemantary school", "es": "Escuela primaria"}, {"en": "High school", "es": "Escuela secundaria"}, {"en": "Tuition", "es": "Matrícula"}, {"en": "Scholarship", "es": "Beca"}, {"en": "Playground", "es": "Patio de recreo"}, {"en": "Library", "es": "Biblioteca"}, {"en": "Grade", "es": "Nota"}, {"en": "Attendances", "es": "Asistencia"}, {"en": "Essay", "es": "Ensayo"}, {"en": "Classmate", "es": "Compañero"}, {"en": "Kind of", "es": "Un tanto"}, {"en": "In advance", "es": "Por adelantado"}, {"en": "In time", "es": "A la larga"}, {"en": "In order to", "es": "Para"}, {"en": "By the way", "es": "A propósito"}, {"en": "As soon as", "es": "En cuanto"}, {"en": "So far", "es": "Hasta ahora"}, {"en": "In case", "es": "Por si"}, {"en": "Suddenly", "es": "De repente"}, {"en": "As usual", "es": "Como de costumbre"}, {"en": "Dare", "es": "Desafiar"}, {"en": "Lead", "es": "Guiar"}, {"en": "Prove", "es": "Demostrar"}, {"en": "Quit", "es": "Dejar"}, {"en": "Spend", "es": "Gastar"}, {"en": "Swear", "es": "Jurar"}, {"en": "Bet", "es": "Apostar"}, {"en": "Upset", "es": "Molestar"}, {"en": "Wake up", "es": "Despertar"}, {"en": "Spoil", "es": "Estropear"}, {"en": "Draw", "es": "Dibujar"}, {"en": "Fit", "es": "Encajar"}, {"en": "Spread", "es": "Difundir"}, {"en": "Shine", "es": "Brillar"}, {"en": "Stick", "es": "Pegarse"}, {"en": "Tear", "es": "Desgarrar"}, {"en": "Bend", "es": "Torcer"}, {"en": "Lean", "es": "Inclinar"}, {"en": "Bite", "es": "Morder"}, {"en": "Bleed", "es": "Sangrar"}, {"en": "Break", "es": "Romper"}, {"en": "Catch", "es": "Agarrar"}, {"en": "Clap", "es": "Aplaudir"}, {"en": "Dive", "es": "Busear"}, {"en": "Feed", "es": "Alimentar"}, {"en": "Melt", "es": "Derretir"}, {"en": "Figure out", "es": "Resolver"}, {"en": "Work out", "es": "Hacer ejercicio"}, {"en": "Look up", "es": "Buscar"}, {"en": "Get along", "es": "Llevarse bien"}, {"en": "Get away", "es": "Huir"}, {"en": "Look forward to", "es": "Esperar con entusiasmo"}, {"en": "Make sense", "es": "Tener sentido"}, {"en": "Take advantage of", "es": "Aprovecharse"}, {"en": "Take care of", "es": "Cuidar"}, {"en": "Get rid of", "es": "Deshacerse de"}, {"en": "Make fun of", "es": "Reírse de"}, {"en": "Shopping", "es": "Compras"}, {"en": "Changing room", "es": "Vestier"}, {"en": "Credir cad", "es": "Tarjeta de crédito"}, {"en": "Cash", "es": "Efectivo"}, {"en": "Customer", "es": "Cliente"}, {"en": "Cart", "es": "Carreta"}, {"en": "Delivery", "es": "Entrega"}, {"en": "Bar code", "es": "Código de barras"}, {"en": "Bag", "es": "Bolsa"}, {"en": "Shelf", "es": "Estante"}, {"en": "Packaging", "es": "Empaquetado"}, {"en": "Handmade", "es": "Hecho a mano"}, {"en": "Size", "es": "Tamaño"}, {"en": "Weight", "es": "Peso"}, {"en": "Width", "es": "Ancho"}, {"en": "Depth", "es": "Profundidad"}, {"en": "Length", "es": "Longitud"}, {"en": "Height", "es": "Altura"}, {"en": "Surface", "es": "Superfície"}];
+    const INTER = [{"en": "easy", "es": "fácil"}, {"en": "hard", "es": "duro"}, {"en": "soft", "es": "suave"}, {"en": "dark", "es": "oscuro"}, {"en": "bright", "es": "brillante"}, {"en": "long", "es": "largo"}, {"en": "short", "es": "corto"}, {"en": "high", "es": "alto"}, {"en": "low", "es": "bajo"}, {"en": "far", "es": "lejano"}, {"en": "near", "es": "cercano"}, {"en": "nice", "es": "agradable"}, {"en": "noon", "es": "mediodía"}, {"en": "winter", "es": "invierno"}, {"en": "spring", "es": "primavera"}, {"en": "summer", "es": "verano"}, {"en": "Monday", "es": "lunes"}, {"en": "Tuesday", "es": "martes"}, {"en": "Wednesday", "es": "miércoles"}, {"en": "Thursday", "es": "jueves"}, {"en": "Friday", "es": "viernes"}, {"en": "Saturday", "es": "sábado"}, {"en": "Sunday", "es": "domingo"}, {"en": "week", "es": "semana"}, {"en": "month", "es": "mes"}, {"en": "year", "es": "año"}, {"en": "see", "es": "ver"}, {"en": "hear", "es": "oír"}, {"en": "talk", "es": "hablar"}, {"en": "think", "es": "pensar"}, {"en": "understand", "es": "entender"}, {"en": "wear", "es": "llevar ropa"}, {"en": "know", "es": "saber"}, {"en": "bring", "es": "traer"}, {"en": "sell", "es": "vender"}, {"en": "buy", "es": "comprar"}, {"en": "want", "es": "querer"}, {"en": "hate", "es": "odiar"}, {"en": "find", "es": "encontrar"}, {"en": "lose", "es": "perder"}, {"en": "ceiling", "es": "techo"}, {"en": "floor", "es": "suelo"}, {"en": "wall", "es": "pared"}, {"en": "hand", "es": "mano"}, {"en": "finger", "es": "dedo"}, {"en": "arm", "es": "brazo"}, {"en": "leg", "es": "pierna"}, {"en": "foot", "es": "pie"}, {"en": "back", "es": "espalda"}, {"en": "neck", "es": "cuello"}, {"en": "head", "es": "cabeza"}, {"en": "face", "es": "cara"}, {"en": "eye", "es": "ojo"}, {"en": "ear", "es": "oreja"}, {"en": "nose", "es": "nariz"}, {"en": "mouth", "es": "boca"}, {"en": "tooth", "es": "diente"}, {"en": "body", "es": "cuerpo"}, {"en": "blood", "es": "sangre"}, {"en": "street", "es": "calle"}, {"en": "building", "es": "edificio"}, {"en": "store", "es": "tienda"}, {"en": "corner", "es": "esquina"}, {"en": "road", "es": "carretera"}, {"en": "beach", "es": "playa"}, {"en": "bridge", "es": "puente"}, {"en": "church", "es": "iglesia"}, {"en": "quick", "es": "rápido"}, {"en": "slow", "es": "lento"}, {"en": "fat", "es": "gordo"}, {"en": "thin", "es": "delgado"}, {"en": "wide", "es": "ancho"}, {"en": "strong", "es": "fuerte"}, {"en": "tall", "es": "alto"}, {"en": "smart", "es": "inteligente"}, {"en": "what", "es": "qué"}, {"en": "where", "es": "dónde"}, {"en": "why", "es": "por qué"}, {"en": "when", "es": "cuándo"}, {"en": "who", "es": "quien"}, {"en": "how", "es": "cómo"}, {"en": "change", "es": "cambiar"}, {"en": "get", "es": "obtener"}, {"en": "call", "es": "llamar"}, {"en": "meet", "es": "encontrarse"}, {"en": "remember", "es": "recordar"}, {"en": "begin", "es": "comenzar"}, {"en": "forget", "es": "olvidar"}, {"en": "feel", "es": "sentir"}, {"en": "try", "es": "intentar"}, {"en": "turn", "es": "girar"}, {"en": "come", "es": "venir"}, {"en": "ask", "es": "preguntar"}, {"en": "forgive", "es": "perdonar"}, {"en": "smoke", "es": "fumar"}, {"en": "make", "es": "hacer"}, {"en": "fork", "es": "tenedor"}, {"en": "knife", "es": "cuchillo"}, {"en": "spoon", "es": "cuchara"}, {"en": "teaspoon", "es": "cucharita"}, {"en": "bottle", "es": "botella"}, {"en": "plate", "es": "plato"}, {"en": "glass", "es": "vaso"}, {"en": "pot", "es": "olla"}, {"en": "cup", "es": "taza"}, {"en": "between", "es": "entre"}, {"en": "under", "es": "debajo"}, {"en": "above", "es": "arriba"}, {"en": "before", "es": "antes"}, {"en": "after", "es": "después"}, {"en": "behind", "es": "atrás"}, {"en": "bear", "es": "oso"}, {"en": "deer", "es": "ciervo"}, {"en": "fox", "es": "zorro"}, {"en": "goat", "es": "cabra"}, {"en": "wolf", "es": "lobo"}, {"en": "goose", "es": "ganso"}, {"en": "bird", "es": "pájaro"}, {"en": "cow", "es": "vaca"}, {"en": "donkey", "es": "burro"}, {"en": "sheep", "es": "oveja"}, {"en": "monkey", "es": "mono"}, {"en": "fish", "es": "pez"}, {"en": "mouse", "es": "ratón"}, {"en": "snake", "es": "serpiente"}, {"en": "arrival", "es": "llegada"}, {"en": "departure", "es": "salida"}, {"en": "flight", "es": "vuelo"}, {"en": "landing", "es": "aterrizaje"}, {"en": "luggage", "es": "equipaje"}, {"en": "suitcase", "es": "maleta"}, {"en": "fly", "es": "volar"}, {"en": "sail", "es": "navegar"}, {"en": "tour", "es": "recorrer"}, {"en": "ride", "es": "cabalgar"}, {"en": "breakfast", "es": "desayuno"}, {"en": "lunch", "es": "almuerzo"}, {"en": "dinner", "es": "cena"}, {"en": "meal", "es": "comida"}, {"en": "meat", "es": "carne"}, {"en": "wine", "es": "vino"}, {"en": "juice", "es": "jugo"}, {"en": "vegetable", "es": "verdura"}, {"en": "dessert", "es": "postre"}, {"en": "sauce", "es": "salsa"}, {"en": "salt", "es": "sal"}, {"en": "pepper", "es": "pimienta"}, {"en": "milk", "es": "leche"}, {"en": "bread", "es": "pan"}, {"en": "honey", "es": "miel"}, {"en": "oil", "es": "aceite"}, {"en": "careful", "es": "cuidadoso"}, {"en": "quiet", "es": "calmado"}, {"en": "useful", "es": "util"}, {"en": "wild", "es": "salvaje"}, {"en": "cheap", "es": "barato"}, {"en": "expensive", "es": "caro"}, {"en": "wet", "es": "mojado"}, {"en": "safe", "es": "seguro"}, {"en": "dry", "es": "seco"}, {"en": "deep", "es": "profundo"}, {"en": "shallow", "es": "superficial"}, {"en": "queen", "es": "reina"}, {"en": "neighbor", "es": "vecino"}, {"en": "true", "es": "verdad"}];
+
+    // ═══════════════════════════════════════════════════════════════
+    //  STATE
+    // ═══════════════════════════════════════════════════════════════
+    let state = {
+      cat: null,
+      dir: 'en-es',
+      student: {},
+      questions: [],
+      current: 0,
+      correctCount: 0,
+      errorCount: 0,
+      answers: [],
+      startTime: null,
+      isRetry: false
+    };
+
+    // ═══════════════════════════════════════════════════════════════
+    //  UTILS
+    // ═══════════════════════════════════════════════════════════════
+    function norm(s) { if (!s) return ''; return s.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' '); }
+    function shuffle(a) { const r = [...a]; for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[r[i], r[j]] = [r[j], r[i]]; } return r; }
+    function calcGrade(c, t) { if (!t) return 1.0; return Math.round((1 + c / t * 4) * 10) / 10; }
+    function gradeColor(g) { return g >= 4.5 ? '#10b981' : g >= 3.5 ? '#C9A84C' : g >= 3.0 ? '#f59e0b' : '#ef4444'; }
+    function gradeEmoji(g) { return g >= 4.5 ? '🏆' : g >= 3.5 ? '⭐' : g >= 3.0 ? '👍' : '📚'; }
+    function showToast(m, t, d = 1600) { const el = document.getElementById('toast'); el.textContent = m; el.className = `toast show ${t}`; setTimeout(() => { el.className = 'toast'; }, d); }
+    function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-' + id).classList.add('active'); window.scrollTo(0, 0); }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  REGISTER
+    // ═══════════════════════════════════════════════════════════════
+    function selectCat(c) { state.cat = c; document.querySelectorAll('.cat-card').forEach(el => el.classList.toggle('on', el.dataset.cat === c)); }
+    function selectDir(d) { state.dir = d; document.querySelectorAll('[data-dir]').forEach(el => el.classList.toggle('on', el.dataset.dir === d)); }
+
+    function getPool() {
+      if (state.cat === 'basic') return BASIC;
+      if (state.cat === 'inter') return INTER;
+      return [...BASIC, ...INTER];
+    }
+
+    function startExam() {
+      const nombres = document.getElementById('reg-nombres').value.trim();
+      const apellidos = document.getElementById('reg-apellidos').value.trim();
+      const curso = document.getElementById('reg-curso').value.trim();
+      const err = document.getElementById('reg-error');
+      if (!nombres || !apellidos) { err.textContent = '⚠ Por favor ingresa tus nombres y apellidos.'; err.style.display = 'block'; return; }
+      if (!state.cat) { err.textContent = '⚠ Selecciona una categoría.'; err.style.display = 'block'; return; }
+      err.style.display = 'none';
+      state.student = { nombres, apellidos, curso };
+      state.startTime = new Date();
+      state.isRetry = false;
+      buildQuestions(getPool());
+      launchExam();
+    }
+
+    function buildQuestions(pool) {
+      const all = shuffle(pool);
+      state.questions = all.map(word => ({ word }));
+      state.current = 0; state.correctCount = 0; state.errorCount = 0; state.answers = [];
+    }
+
+    function launchExam() {
+      const s = state.student;
+      document.getElementById('hdr-name').textContent = `${s.nombres} ${s.apellidos}`;
+      const catLabels = { basic: 'Intermediate Vocabulary', inter: 'Basic Vocabulary', all: 'Todos los Niveles' };
+      document.getElementById('hdr-cat').textContent = `· ${catLabels[state.cat]}`;
+      document.getElementById('exam-dir').textContent = state.dir === 'en-es' ? '🇬🇧 EN → ES' : '🇪🇸 ES → EN';
+      showScreen('exam'); renderQuestion();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  EXAM
+    // ═══════════════════════════════════════════════════════════════
+    function renderQuestion() {
+      const qi = state.current, total = state.questions.length;
+      if (qi >= total) { showResults(false); return; }
+      const q = state.questions[qi];
+      document.getElementById('exam-progress-fill').style.width = (qi / total * 100) + '%';
+      document.getElementById('exam-counter').textContent = `Pregunta ${qi + 1} de ${total}`;
+      document.getElementById('live-ok').textContent = state.correctCount;
+      document.getElementById('live-err').textContent = state.errorCount;
+
+      const area = document.getElementById('question-area'); area.innerHTML = '';
+      const card = document.createElement('div'); card.className = 'card fade-up';
+
+      const word = q.word;
+      const dir = state.dir;
+      const questionText = dir === 'en-es' ? word.en : word.es;
+      const correctAnswer = dir === 'en-es' ? word.es : word.en;
+
+      // Build 3 distractors from pool (same category)
+      const pool = getPool().filter(w => norm(w.en) !== norm(word.en));
+      const distractors = shuffle(pool).slice(0, 3).map(w => dir === 'en-es' ? w.es : w.en);
+      const options = shuffle([correctAnswer, ...distractors]);
+
+      card.innerHTML = `
+    <div style="font-size:11px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;">${dir === 'en-es' ? '🇬🇧 Selecciona la traducción en Español' : '🇪🇸 Selecciona la palabra en Inglés'}</div>
+    <div style="font-size:40px;font-family:'Crimson Pro',serif;color:var(--text);margin:14px 0;text-align:center;line-height:1.2;">${questionText}</div>
+  `;
+
+      const grid = document.createElement('div');
+      grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;';
+
+      options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.innerHTML = `<span style="color:var(--gold);font-weight:700;margin-right:8px;">${String.fromCharCode(65 + i)}.</span>${opt}`;
+        btn.onclick = () => {
+          const isCorrect = norm(opt) === norm(correctAnswer);
+          grid.querySelectorAll('.choice-btn').forEach(b => {
+            b.disabled = true;
+            const bText = b.textContent.replace(/^[A-D]\.\s*/, '').trim();
+            if (norm(bText) === norm(correctAnswer)) b.classList.add('correct');
+            else if (b === btn && !isCorrect) b.classList.add('wrong');
+          });
+          setTimeout(() => recordAnswer(word, isCorrect, opt, correctAnswer), 850);
+        };
+        grid.appendChild(btn);
+      });
+
+      card.appendChild(grid);
+      area.appendChild(card);
+    }
+
+    function recordAnswer(word, isCorrect, userAnswer, correctAnswer) {
+      state.answers.push({ word, isCorrect, userAnswer, correctAnswer });
+      if (isCorrect) { state.correctCount++; showToast('✓ ¡Correcto!', 'ok'); }
+      else { state.errorCount++; showToast('✗ Incorrecto', 'bad'); }
+      state.current++; setTimeout(renderQuestion, 300);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  FINISH MODAL
+    // ═══════════════════════════════════════════════════════════════
+    function showFinishModal() {
+      const answered = state.answers.length, total = state.questions.length;
+      document.getElementById('modal-progress-text').textContent = `Has respondido ${answered} de ${total} preguntas (${Math.round(answered / total * 100)}%).`;
+      document.getElementById('finish-modal').style.display = 'flex';
+    }
+    function hideFinishModal() { document.getElementById('finish-modal').style.display = 'none'; }
+    function finishNow() {
+      hideFinishModal();
+      for (let i = state.current; i < state.questions.length; i++) {
+        const q = state.questions[i];
+        const ca = state.dir === 'en-es' ? q.word.es : q.word.en;
+        state.answers.push({ word: q.word, isCorrect: false, userAnswer: '(sin responder)', correctAnswer: ca });
+      }
+      showResults(true);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  RESULTS
+    // ═══════════════════════════════════════════════════════════════
+    function showResults(earlyFinish) {
+      // Answered questions only count for grade
+      const answered = state.answers.length;
+      const totalPool = state.questions.length;
+      const correct = state.correctCount;
+      const pct = answered ? Math.round(correct / answered * 100) : 0;
+      // Grade based on answered / total pool
+      const gradeBase = answered / totalPool;
+      const accuracyFactor = answered ? correct / answered : 0;
+      const grade = Math.round((1 + (gradeBase * accuracyFactor) * 4) * 10) / 10;
+      const gc = gradeColor(grade), ge = gradeEmoji(grade);
+
+      document.getElementById('res-ok').textContent = correct;
+      document.getElementById('res-err').textContent = answered - correct;
+      document.getElementById('res-pct').textContent = pct + '%';
+
+      const s = state.student, now = new Date(), elapsed = Math.round((now - state.startTime) / 1000);
+      const catLabels = { basic: 'Intermediate Vocabulary', inter: 'Basic Vocabulary', all: 'Todos los Niveles' };
+      document.getElementById('res-meta').innerHTML = `
+    <strong style="color:var(--text);">${s.nombres} ${s.apellidos}</strong>${s.curso ? ` · ${s.curso}` : ''}<br>
+    ${catLabels[state.cat]} · ${now.toLocaleDateString('es-CO')} · ${now.toLocaleTimeString('es-CO')} · Tiempo: ${Math.floor(elapsed / 60)}m ${elapsed % 60}s<br>
+    ${earlyFinish ? `<span style="color:#f59e0b;">Terminó anticipadamente: ${answered}/${totalPool} preguntas respondidas</span>` : ''}`;
+
+      document.getElementById('grade-display').innerHTML = `
+    <div style="width:120px;height:120px;border-radius:50%;background:${gc}18;border:3px solid ${gc};display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 12px;">
+      <div style="font-size:28px;">${ge}</div>
+      <div style="font-size:34px;font-weight:700;color:${gc};font-family:'Crimson Pro',serif;line-height:1;">${grade.toFixed(1)}</div>
+      <div style="font-size:11px;color:${gc};font-weight:600;">/ 5.0</div>
+    </div>
+    <div style="font-size:14px;color:var(--muted);">${grade >= 4.5 ? '¡Excelente! Dominio sobresaliente.' : grade >= 3.5 ? '¡Muy bien! Sigue practicando.' : grade >= 3.0 ? 'Aprobado. Hay margen de mejora.' : 'Necesitas repasar más. ¡Tú puedes!'}</div>`;
+
+      const errors = state.answers.filter(a => !a.isCorrect);
+      const rb = document.getElementById('retry-btn');
+      if (errors.length) { rb.style.display = 'inline-block'; rb.textContent = `🔁 Repasar ${errors.length} error${errors.length > 1 ? 'es' : ''}`; }
+      else rb.style.display = 'none';
+
+      const list = document.getElementById('review-list'); list.innerHTML = '';
+      state.answers.forEach((a, i) => {
+        const row = document.createElement('div'); row.className = `review-row ${a.isCorrect ? 'ok' : 'err'}`;
+        const dir = state.dir;
+        row.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+      <div><span style="font-weight:700;color:${a.isCorrect ? '#10b981' : '#ef4444'};">${a.isCorrect ? '✓' : '✗'}</span>
+      <span style="font-weight:700;color:var(--text);margin-left:6px;">${dir === 'en-es' ? a.word.en : a.word.es}</span>
+      <span style="color:var(--muted);font-size:13px;"> → ${dir === 'en-es' ? a.word.es : a.word.en}</span></div>
+      <span style="font-size:11px;color:var(--muted);white-space:nowrap;">Q${i + 1}</span></div>
+      ${!a.isCorrect ? `<div style="margin-top:5px;font-size:13px;"><span style="color:#ef4444;">Tu respuesta: ${a.userAnswer}</span><br><span style="color:#10b981;">Correcto: ${a.correctAnswer}</span></div>` : ''}`;
+        list.appendChild(row);
+      });
+
+      showScreen('results');
+      sendToSheets(grade, correct, answered - correct, pct, answered, totalPool, earlyFinish);
+    }
+
+    function retryErrors() {
+      const errors = state.answers.filter(a => !a.isCorrect); if (!errors.length) return;
+      state.questions = errors.map(a => ({ word: a.word }));
+      state.current = 0; state.correctCount = 0; state.errorCount = 0; state.answers = []; state.startTime = new Date(); state.isRetry = true;
+      showScreen('exam'); renderQuestion();
+    }
+
+    function goHome() {
+      state.cat = null; state.answers = []; state.current = 0; state.correctCount = 0; state.errorCount = 0;
+      document.querySelectorAll('.cat-card').forEach(el => el.classList.remove('on')); showScreen('register');
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  GOOGLE SHEETS (GET, no CORS preflight)
+    // ═══════════════════════════════════════════════════════════════
+    const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1OuTfT10W_ezEl3QTlFEmaCFoaHt_msohQa3oEy0oDOQ/edit?usp=sharing';
+    // NOTA: Para que esto funcione, debes reemplazar GAS_URL por un Google Apps Script Web App.
+    // El navegador NO puede hacer POST/GET directamente a un link de spreadsheet.
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbxb_P7HPz_lOhSrnUh6Oh7l2DLjlrCsVTPydfgbSmgYy0Gl6KsCsI6R6IInuBgiq4aD/exec';
+
+    async function sendToSheets(grade, correct, errors, pct, answered, total, earlyFinish) {
+      const el = document.getElementById('sheets-status');
+      if (GAS_URL === 'YOUR_GAS_URL_HERE') { el.innerHTML = '⚠ Sheets no configurado. Reemplaza <code>YOUR_GAS_URL_HERE</code> con tu URL /exec.'; return; }
+      el.textContent = '⏳ Enviando a Google Sheets...';
+      const s = state.student, now = state.startTime;
+      const catLabels = { basic: 'Intermediate Vocabulary', inter: 'Basic Vocabulary', all: 'Todos los Niveles' };
+      const payload = {
+        nombres: s.nombres, apellidos: s.apellidos, curso: s.curso,
+        fecha: now.toLocaleDateString('es-CO'), hora: now.toLocaleTimeString('es-CO'),
+        categoria: catLabels[state.cat],
+        direccion: state.dir === 'en-es' ? 'EN → ES' : 'ES → EN',
+        total_palabras: total, respondidas: answered,
+        aciertos: correct, errores: errors,
+        porcentaje: pct + '%', nota: grade.toFixed(1),
+        finalizo_anticipado: earlyFinish ? 'Sí' : 'No'
+      };
+      try {
+        await fetch(`${GAS_URL}?${new URLSearchParams(payload).toString()}`, { method: 'GET', mode: 'no-cors' });
+        el.innerHTML = '✅ Resultados enviados a Google Sheets correctamente.'; el.style.color = '#10b981';
+      } catch (e) { el.innerHTML = '❌ Error al enviar. Verifica la URL del script.'; el.style.color = '#ef4444'; }
+    }
+
+    selectDir('en-es');
+  </script>
+</body>
+
+</html>
